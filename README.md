@@ -36,7 +36,3 @@ A ideia central: você calcula e organiza seus próprios trânsitos (com casa, s
 ## Stack
 
 HTML + CSS + JavaScript puro, sem dependências externas — exceto a chamada opcional à API pública do Nominatim (OpenStreetMap) para a busca de cidade.
-
-## Licença
-
-Projeto pessoal — adicione a licença de sua preferência caso for tornar o repositório público.
