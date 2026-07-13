@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Efeméride Pessoal — Sistema de Trânsitos Astrológicos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B0E1A;
+    --bg-panel:#121729;
+    --bg-panel2:#171E38;
+    --line:#262C42;
+    --gold:#C9A24B;
+    --gold-dim:#9C8140;
+    --violet:#9C8FE0;
+    --rose:#C1613F;
+    --sage:#6FA88A;
+    --text:#EDEAE0;
+    --text-dim:#8B92A8;
+    --text-faint:#565E78;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:14px; line-height:1.5;
+    background-image:
+      radial-gradient(1px 1px at 20% 30%, rgba(201,162,75,0.35) 0, transparent 60%),
+      radial-gradient(1px 1px at 70% 15%, rgba(201,162,75,0.25) 0, transparent 60%),
+      radial-gradient(1px 1px at 85% 60%, rgba(156,143,224,0.3) 0, transparent 60%),
+      radial-gradient(1px 1px at 40% 80%, rgba(201,162,75,0.2) 0, transparent 60%),
+      radial-gradient(1px 1px at 10% 65%, rgba(156,143,224,0.25) 0, transparent 60%);
+    background-attachment:fixed;
+  }
+  h1,h2,h3{ font-family:'Cormorant Garamond', serif; font-weight:600; letter-spacing:.02em; margin:0 0 4px; }
+  h1{ font-size:34px; color:var(--gold); }
+  h2{ font-size:22px; color:var(--text); border-bottom:1px solid var(--line); padding-bottom:8px; margin-top:0;}
+  .subhead{ font-size:14px; color:var(--gold); text-transform:uppercase; letter-spacing:0.06em; margin:18px 0 10px; }
+  .subhead.period{ color:var(--text-dim); }
+  .subhead .hint{ text-transform:none; letter-spacing:normal; }
+  .eyebrow{ text-transform:uppercase; letter-spacing:.18em; font-size:11px; color:var(--text-faint); margin-bottom:6px;}
+  header{ padding:36px 24px 20px; max-width:1180px; margin:0 auto; }
+  .subtitle{ color:var(--text-dim); max-width:640px; font-size:13.5px; margin-top:6px;}
+  main{ max-width:1180px; margin:0 auto; padding:0 24px 80px; }
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  @media(max-width:880px){ .grid2{grid-template-columns:1fr;} }
+  .panel{ background:linear-gradient(180deg,var(--bg-panel),var(--bg-panel2)); border:1px solid var(--line); border-radius:10px; padding:22px; margin-bottom:20px; }
+  label{ display:block; font-size:11.5px; color:var(--text-dim); margin:12px 0 5px; text-transform:uppercase; letter-spacing:.06em;}
+  input,select{
+    width:100%; background:#0D1122; border:1px solid var(--line); color:var(--text);
+    padding:9px 10px; border-radius:6px; font-family:inherit; font-size:13.5px;
+  }
+  input:focus,select:focus{ outline:none; border-color:var(--gold-dim); }
+  .row{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .row3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+  .hint{ font-size:11.5px; color:var(--text-faint); margin-top:4px; }
+  .btn{
+    background:transparent; border:1px solid var(--gold-dim); color:var(--gold);
+    padding:11px 18px; border-radius:6px; cursor:pointer; font-family:inherit; font-size:13px;
+    letter-spacing:.04em; text-transform:uppercase; margin-top:16px; transition:.15s;
+  }
+  .btn:hover{ background:rgba(201,162,75,0.1); border-color:var(--gold); }
+  .btn.secondary{ border-color:var(--line); color:var(--text-dim); }
+  .btn.secondary:hover{ border-color:var(--violet); color:var(--violet); background:rgba(156,143,224,0.08);}
+  .btn.small{ padding:6px 12px; font-size:11px; margin-top:0; }
+  .tabs{ display:flex; gap:2px; margin-bottom:18px; border-bottom:1px solid var(--line); }
+  .tab{ padding:10px 18px; cursor:pointer; color:var(--text-faint); font-size:12.5px; text-transform:uppercase; letter-spacing:.06em; border-bottom:2px solid transparent; }
+  .tab.active{ color:var(--gold); border-color:var(--gold); }
+  .mode-toggle{ display:flex; gap:8px; margin-bottom:6px; }
+  .preset-row{ display:flex; flex-wrap:wrap; gap:8px; }
+  .mode-btn{ flex:1; padding:9px; text-align:center; border:1px solid var(--line); border-radius:6px; cursor:pointer; color:var(--text-dim); font-size:12px; text-transform:uppercase; letter-spacing:.05em;}
+  .mode-btn.active{ border-color:var(--violet); color:var(--violet); background:rgba(156,143,224,0.08); }
+  table{ width:100%; border-collapse:collapse; font-size:12.8px; }
+  th{ text-align:left; color:var(--text-faint); font-weight:500; text-transform:uppercase; font-size:10.5px; letter-spacing:.05em; padding:8px 10px; border-bottom:1px solid var(--line); position:sticky; top:0; background:var(--bg-panel); }
+  td{ padding:9px 10px; border-bottom:1px solid rgba(38,44,66,.5); vertical-align:top; }
+  tr:hover td{ background:rgba(201,162,75,0.04); }
+  .glyph{ font-size:16px; color:var(--gold); margin-right:4px; }
+  .glyph.natal{ color:var(--violet); }
+  .tag{ display:inline-block; padding:2px 7px; border-radius:20px; font-size:10.5px; border:1px solid var(--line); color:var(--text-dim); }
+  .tag.applying{ border-color:var(--sage); color:var(--sage); }
+  .tag.separating{ border-color:var(--rose); color:var(--rose); }
+  .tag.retro{ border-color:var(--violet); color:var(--violet); }
+  .tag.fast{ border-color:var(--text-faint); color:var(--text-dim); }
+  .tag.medium{ border-color:var(--gold-dim); color:var(--gold-dim); }
+  .tag.slow{ border-color:var(--gold); color:var(--gold); }
+  .tag.phase-new{ border-color:var(--sage); color:var(--sage); }
+  .tag.phase-ending{ border-color:var(--rose); color:var(--rose); }
+  .tag.phase-ongoing{ border-color:var(--gold); color:var(--gold); }
+  .impact-bar{ display:inline-flex; gap:2px; vertical-align:middle; }
+  .impact-bar span{ width:6px; height:11px; background:var(--line); border-radius:1px; display:inline-block;}
+  .impact-bar span.on{ background:var(--gold); }
+  .filters{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:16px; align-items:flex-end; }
+  .filters .f{ min-width:150px; flex:1; }
+  .filters label{ margin:0 0 4px; }
+  .resultsbar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:10px;}
+  .count{ color:var(--text-faint); font-size:12px; }
+  #copyArea{ position:absolute; left:-9999px; }
+  .copybox{ background:#0D1122; border:1px solid var(--line); border-radius:8px; padding:14px; max-height:280px; overflow:auto; white-space:pre-wrap; font-size:12px; color:var(--text-dim); margin-top:10px; display:none; }
+  .note{ background:rgba(156,143,224,0.06); border:1px solid rgba(156,143,224,0.25); border-radius:8px; padding:12px 14px; font-size:12px; color:var(--text-dim); margin-bottom:18px; }
+  .divider{ height:1px; background:var(--line); margin:22px 0; }
+  .empty{ color:var(--text-faint); padding:30px 10px; text-align:center; font-style:italic; }
+  #natalSummary td, #natalSummary th{ font-size:12.5px; }
+  .badge-required{ color:var(--rose); }
+  .scroll-wrap{ max-height:560px; overflow:auto; border:1px solid var(--line); border-radius:8px; }
+  .toolbar{ display:flex; gap:10px; flex-wrap:wrap; }
+  .cityOption{ padding:8px 10px; font-size:12.5px; color:var(--text-dim); border:1px solid var(--line); border-top:none; cursor:pointer; background:#0D1122; }
+  .cityOption:first-child{ border-top:1px solid var(--line); border-radius:6px 6px 0 0; }
+  .cityOption:last-child{ border-radius:0 0 6px 6px; }
+  .cityOption:hover{ background:rgba(201,162,75,0.08); color:var(--gold); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Sistema pessoal de efemérides · não substitui interpretação profissional</div>
+  <h1>☉ Efeméride Pessoal</h1>
+  <div class="subtitle">Calcula, a partir do seu mapa natal, onde cada planeta está transitando — signo, grau, casa e aspectos formados — em uma data específica ou ao longo de um período. Os resultados são ordenados por impacto e podem ser copiados em texto para você mesmo analisar ou levar a uma IA.</div>
+</header>
+
+<main>
+
+<div class="note">
+  <strong>Sobre a precisão:</strong> as posições planetárias usam elementos orbitais keplerianos (válidos ~1900–2100, precisão de poucos minutos de arco) e a Lua usa uma série de termos periódicos (precisão de ~1 minuto de arco). Quíron usa elementos osculadores fixos (sem taxas seculares de precessão do nó/periélio) — bom para décadas próximas de 2000–2050, mas com erro crescente fora desse intervalo, já que sua órbita é perturbada por Saturno e Júpiter. Ascendente/Meio-do-Céu/Casas usam as fórmulas padrão de tempo sideral. Sistemas de casas disponíveis: <strong>Signos Inteiros</strong>, <strong>Casas Iguais</strong> e <strong>Placidus</strong> (cálculo iterativo por trisecção do arco semi-diurno/noturno; pode falhar em latitudes muito próximas dos polos, caindo automaticamente para Casas Iguais nesse caso). Para decisões finas perto de uma cúspide, vale conferir num software de referência.
+</div>
+
+<!-- ===================== MAPA NATAL ===================== -->
+<div class="panel">
+  <h2>1. Mapa natal (referência)</h2>
+  <div class="row3">
+    <div>
+      <label>Data de nascimento</label>
+      <input type="date" id="natalDate">
+    </div>
+    <div>
+      <label>Hora (opcional)</label>
+      <input type="time" id="natalTime">
+      <div class="hint">Sem hora → assume 12:00 e desativa Ascendente/Casas.</div>
+    </div>
+    <div>
+      <label>Fuso horário (UTC)</label>
+      <input type="number" id="natalTz" step="0.5" placeholder="ex: -3">
+    </div>
+  </div>
+  <label>Buscar cidade (preenche latitude/longitude automaticamente)</label>
+  <div class="row" style="grid-template-columns:1fr auto;">
+    <input type="text" id="citySearch" placeholder="ex: Santos, SP, Brasil" onkeydown="if(event.key==='Enter'){event.preventDefault();searchCity();}">
+    <button class="btn small" style="margin-top:0;" onclick="searchCity()">Buscar</button>
+  </div>
+  <div id="cityResults"></div>
+  <div class="hint">Busca via OpenStreetMap (Nominatim). Se não houver internet ou a busca falhar, preencha lat/long manualmente abaixo.</div>
+  <div class="row">
+    <div>
+      <label>Latitude (decimal, + Norte / − Sul)</label>
+      <input type="number" id="natalLat" step="0.0001" placeholder="ex: -23.9608 (Santos)">
+    </div>
+    <div>
+      <label>Longitude (decimal, + Leste / − Oeste)</label>
+      <input type="number" id="natalLon" step="0.0001" placeholder="ex: -46.3336 (Santos)">
+    </div>
+  </div>
+  <div class="row">
+    <div>
+      <label>Sistema de casas</label>
+      <select id="houseSystem">
+        <option value="whole">Signos Inteiros</option>
+        <option value="equal">Casas Iguais</option>
+        <option value="placidus">Placidus</option>
+      </select>
+    </div>
+    <div></div>
+  </div>
+  <div class="divider"></div>
+  <div class="toolbar" style="margin-bottom:12px;">
+    <button class="btn secondary small" onclick="exportNatalInput()">Exportar dados (JSON)</button>
+    <button class="btn secondary small" onclick="toggleImportBox()">Importar dados (JSON)</button>
+  </div>
+  <div id="importBox" style="display:none; margin-bottom:16px;">
+    <label>Colar JSON aqui</label>
+    <textarea id="importJsonText" rows="4" style="width:100%; background:#0D1122; border:1px solid var(--line); color:var(--text); padding:9px 10px; border-radius:6px; font-family:inherit; font-size:12.5px;" placeholder='{"data_nascimento":"1990-05-15","hora_nascimento":"14:30","fuso_horario":-3,"latitude":-23.5505,"longitude":-46.6333,"sistema_casas":"placidus"}'></textarea>
+    <div class="row" style="margin-top:8px; align-items:flex-end;">
+      <div>
+        <label>...ou selecione um arquivo .json</label>
+        <input type="file" id="importJsonFile" accept="application/json,.json">
+      </div>
+      <div>
+        <button class="btn small" onclick="importNatalInput()">Carregar dados</button>
+      </div>
+    </div>
+    <div class="hint" id="importStatus" style="margin-top:6px;"></div>
+  </div>
+  <button class="btn" onclick="calcNatal()">Calcular mapa natal</button>
+  <div class="divider"></div>
+  <div id="natalOutput"><div class="empty">Preencha os dados e calcule para ver seu mapa natal aqui.</div></div>
+</div>
+
+<!-- ===================== TRÂNSITOS ===================== -->
+<div class="panel">
+  <h2>2. Trânsitos</h2>
+  <div class="mode-toggle">
+    <div class="mode-btn active" id="modeSingleBtn" onclick="setMode('single')">Momento exato</div>
+    <div class="mode-btn" id="modeRangeBtn" onclick="setMode('range')">Intervalo / ano</div>
+  </div>
+
+  <div id="singleFields">
+    <div class="row3">
+      <div><label>Data</label><input type="date" id="singleDate"></div>
+      <div><label>Hora (opcional)</label><input type="time" id="singleTime"><div class="hint">Padrão: 12:00</div></div>
+      <div><label>Fuso (UTC)</label><input type="number" id="singleTz" step="0.5" placeholder="ex: -3"></div>
+    </div>
+    <button class="btn secondary small" style="margin-top:10px;" onclick="fillNow()">Preencher com agora</button>
+  </div>
+
+  <div id="rangeFields" style="display:none">
+    <div class="row3">
+      <div><label>Data inicial</label><input type="date" id="rangeStart"></div>
+      <div><label>Data final</label><input type="date" id="rangeEnd"></div>
+      <div><label>Passo (dias)</label><input type="number" id="rangeStep" value="1" min="1" max="10"></div>
+    </div>
+    <div class="hint" style="margin:8px 0 4px;">Atalhos de período (a partir de hoje):</div>
+    <div class="preset-row">
+      <button type="button" class="btn secondary small" onclick="fillPreset('hoje')">Hoje</button>
+      <button type="button" class="btn secondary small" onclick="fillPreset('semana')">Esta semana</button>
+      <button type="button" class="btn secondary small" onclick="fillPreset('mes')">Este mês</button>
+      <button type="button" class="btn secondary small" onclick="fillPreset('semestre')">Este semestre</button>
+      <button type="button" class="btn secondary small" onclick="fillPreset('ano')">Este ano</button>
+    </div>
+    <div class="hint">Para "todos os trânsitos de 1 ano", use 01/01 a 31/12. Para vários anos, apenas amplie o intervalo (períodos longos podem levar alguns segundos para calcular).</div>
+  </div>
+
+  <button class="btn" onclick="calcTransits()">Calcular trânsitos</button>
+  <div id="transitStatus" class="hint" style="margin-top:8px;"></div>
+</div>
+
+<!-- ===================== RESULTADOS ===================== -->
+<div class="panel" id="resultsPanel" style="display:none;">
+  <h2>3. Posições em trânsito</h2>
+  <div class="scroll-wrap" style="margin-bottom:26px;">
+    <table id="positionsTable"><thead></thead><tbody></tbody></table>
+  </div>
+
+  <h2>4. Aspectos (ordenados por impacto)</h2>
+  <div class="filters">
+    <div class="f">
+      <label>Planeta em trânsito</label>
+      <select id="fPlanet"><option value="">Todos</option></select>
+    </div>
+    <div class="f">
+      <label>Signo</label>
+      <select id="fSign"><option value="">Todos</option></select>
+    </div>
+    <div class="f">
+      <label>Casa natal</label>
+      <select id="fHouse"><option value="">Todas</option></select>
+    </div>
+    <div class="f">
+      <label>Tipo de aspecto</label>
+      <select id="fAspect"><option value="">Todos</option></select>
+    </div>
+    <div class="f">
+      <label>Ponto natal</label>
+      <select id="fNatal"><option value="">Todos</option></select>
+    </div>
+    <div class="f" style="min-width:120px; flex:0.6;">
+      <label>Impacto mínimo</label>
+      <input type="number" id="fImpact" min="0" max="100" step="1" value="0" placeholder="0–100">
+    </div>
+    <div class="f" style="min-width:150px; flex:0.6;">
+      <label>Máx. por seção</label>
+      <input type="number" id="fLimit" min="1" step="1" placeholder="todos">
+    </div>
+  </div>
+
+  <div class="resultsbar">
+    <span class="count" id="resultCount"></span>
+    <div class="toolbar">
+      <button class="btn secondary small" onclick="copyForAI()">Copiar para IA interpretar</button>
+    </div>
+  </div>
+
+  <div id="backgroundBlock" style="display:none">
+    <h3 class="subhead">Pano de fundo <span class="hint">— trânsitos lentos já em curso, que atravessam todo o período calculado</span></h3>
+    <div class="scroll-wrap" style="margin-bottom:26px;">
+      <table id="backgroundTable"><thead></thead><tbody></tbody></table>
+    </div>
+  </div>
+
+  <h3 class="subhead period" id="periodHeading" style="display:none;">Eventos do período</h3>
+  <div class="scroll-wrap">
+    <table id="aspectsTable"><thead></thead><tbody></tbody></table>
+  </div>
+  <div class="copybox" id="copyBox"></div>
+  <textarea id="copyArea"></textarea>
+</div>
+
+</main>
+
+<script>
+const RAD = Math.PI/180;
+function normDeg(d){ d = d % 360; if(d<0) d+=360; return d; }
+function toJD(y,m,d,h){
+  if(m<=2){ y-=1; m+=12; }
+  const A = Math.floor(y/100);
+  const B = 2-A+Math.floor(A/4);
+  return Math.floor(365.25*(y+4716)) + Math.floor(30.6001*(m+1)) + d + h/24 + B - 1524.5;
+}
+function dateToJD_UT(y,m,d,localHour,tz){
+  const jdLocal = toJD(y,m,d,localHour);
+  return jdLocal - (tz||0)/24;
+}
+
+const SIGNS = ["Áries","Touro","Gêmeos","Câncer","Leão","Virgem","Libra","Escorpião","Sagitário","Capricórnio","Aquário","Peixes"];
+const SIGN_GLYPH = ["♈","♉","♊","♋","♌","♍","♎","♏","♐","♑","♒","♓"];
+const PLANET_GLYPH = {Sol:"☉",Lua:"☽",Mercurio:"☿",Venus:"♀",Marte:"♂",Jupiter:"♃",Saturno:"♄",Urano:"♅",Netuno:"♆",Plutao:"♇",Quiron:"⚷",NodoNorte:"☊",Asc:"Asc",MC:"MC"};
+const PLANET_LABEL = {Sol:"Sol",Lua:"Lua",Mercurio:"Mercúrio",Venus:"Vênus",Marte:"Marte",Jupiter:"Júpiter",Saturno:"Saturno",Urano:"Urano",Netuno:"Netuno",Plutao:"Plutão",Quiron:"Quíron",NodoNorte:"Nodo Norte",Asc:"Ascendente",MC:"Meio do Céu"};
+const TRANSIT_BODIES = ["Sol","Lua","Mercurio","Venus","Marte","Jupiter","Saturno","Urano","Netuno","Plutao","Quiron","NodoNorte"];
+const PERSONAL = ["Sol","Lua","Mercurio","Venus","Marte","Asc","MC"];
+const OUTER = ["Urano","Netuno","Plutao"];
+const SOCIAL = ["Jupiter","Saturno"];
+const CENTAUR = ["Quiron"];
+const PLANET_GROUPS = {
+  "Pessoais":   ["Sol","Lua","Mercurio","Venus","Marte"],
+  "Sociais":    ["Jupiter","Saturno"],
+  "Geracionais":["Urano","Netuno","Plutao"],
+  "Pontos":     ["Quiron","NodoNorte"]
+};
+// Velocidade média diária (graus/dia), em módulo — usada só pra estimar a duração
+// típica de um aspecto (não para posição). Mercúrio/Marte variam bastante por causa
+// de retrogradações; os valores aqui são médias de longo prazo, então a duração
+// estimada é uma referência, não uma previsão exata daquele trânsito específico.
+const AVG_SPEED = {
+  Sol:0.9856, Lua:13.176, Mercurio:1.383, Venus:1.2, Marte:0.524,
+  Jupiter:0.0831, Saturno:0.0335, Urano:0.0117, Netuno:0.006, Plutao:0.004,
+  Quiron:0.0194, NodoNorte:0.0529
+};
+function typicalSpanDays(transitName, aspectOrbDeg){
+  const speed = AVG_SPEED[transitName]||1;
+  return (2*aspectOrbDeg)/speed;
+}
+function speedTag(transitName, aspectOrbDeg){
+  const days = typicalSpanDays(transitName, aspectOrbDeg);
+  let label, cls, approx;
+  if(days<7){ label='Rápido'; cls='fast'; }
+  else if(days<90){ label='Médio'; cls='medium'; }
+  else { label='Lento'; cls='slow'; }
+  if(days<1) approx='~'+Math.max(1,Math.round(days*24))+'h';
+  else if(days<30) approx='~'+Math.round(days)+'d';
+  else if(days<365) approx='~'+Math.round(days/30)+'m';
+  else approx='~'+(days/365).toFixed(1)+'a';
+  return {label, cls, approx};
+}
+
+const ELEMENTS = {
+ Mercurio: {a:[0.38709927,0.00000037], e:[0.20563593,0.00001906], i:[7.00497902,-0.00594749], L:[252.25032350,149472.67411175], peri:[77.45779628,0.16047689], node:[48.33076593,-0.12534081]},
+ Venus:    {a:[0.72333566,0.00000390], e:[0.00677672,-0.00004107], i:[3.39467605,-0.00078890], L:[181.97909950,58517.81538729], peri:[131.60246718,0.00268329], node:[76.67984255,-0.27769418]},
+ Terra:    {a:[1.00000261,0.00000562], e:[0.01671123,-0.00004392], i:[-0.00001531,-0.01294668], L:[100.46457166,35999.37244981], peri:[102.93768193,0.32327364], node:[0.0,0.0]},
+ Marte:    {a:[1.52371034,0.00001847], e:[0.09339410,0.00007882], i:[1.84969142,-0.00813131], L:[-4.55343205,19140.30268499], peri:[-23.94362959,0.44441088], node:[49.55953891,-0.29257343]},
+ Jupiter:  {a:[5.20288700,-0.00011607], e:[0.04838624,-0.00013253], i:[1.30439695,-0.00183714], L:[34.39644051,3034.74612775], peri:[14.72847983,0.21252668], node:[100.47390909,0.20469106]},
+ Saturno:  {a:[9.53667594,-0.00125060], e:[0.05386179,-0.00050991], i:[2.48599187,0.00193609], L:[49.95424423,1222.49362201], peri:[92.59887831,-0.41897216], node:[113.66242448,-0.28867794]},
+ Urano:    {a:[19.18916464,-0.00196176], e:[0.04725744,-0.00004397], i:[0.77263783,-0.00242939], L:[313.23810451,428.48202785], peri:[170.95427630,0.40805281], node:[74.01692503,0.04240589]},
+ Netuno:   {a:[30.06992276,0.00026291], e:[0.00859048,0.00005105], i:[1.77004347,0.00035372], L:[-55.12002969,218.45945325], peri:[44.96476227,-0.32241464], node:[131.78422574,-0.00508664]},
+ Plutao:   {a:[39.48211675,-0.00031596], e:[0.24882730,0.00005170], i:[17.14001206,0.00004818], L:[238.92903833,145.20780515], peri:[224.06891629,-0.04062942], node:[110.30393684,-0.01183482]},
+ // Quíron (2060 Chiron): elementos osculadores em J2000 (JD 2451545.0), sem taxas seculares de i/e/peri/node
+ // (órbita de centauro perturbada por Saturno/Júpiter, não segue Kepler puro a longo prazo).
+ // a=13.70 UA, e=0.3772, i=6.93°, arg. periélio=339.48°, nodo=209.38°, anomalia média=13.18° em J2000.
+ // Período ~50.71 anos → movimento médio ~709.85°/século, usado apenas em L.
+ Quiron:   {a:[13.70,0], e:[0.3772,0], i:[6.93,0], L:[202.04,709.85], peri:[188.86,0], node:[209.38,0]}
+};
+
+function keplerSolve(M,e){
+  let E=M;
+  for(let k=0;k<50;k++){
+    const dE=(E-e*Math.sin(E)-M)/(1-e*Math.cos(E));
+    E-=dE;
+    if(Math.abs(dE)<1e-9) break;
+  }
+  return E;
+}
+function heliocentric(el,T){
+  const a=el.a[0]+el.a[1]*T;
+  const e=el.e[0]+el.e[1]*T;
+  const i=(el.i[0]+el.i[1]*T)*RAD;
+  const L=normDeg(el.L[0]+el.L[1]*T);
+  const peri=normDeg(el.peri[0]+el.peri[1]*T);
+  const node=normDeg(el.node[0]+el.node[1]*T);
+  const w=normDeg(peri-node)*RAD;
+  const Om=node*RAD;
+  let M=normDeg(L-peri); if(M>180) M-=360; M*=RAD;
+  const E=keplerSolve(M,e);
+  const xOrb=a*(Math.cos(E)-e);
+  const yOrb=a*Math.sqrt(1-e*e)*Math.sin(E);
+  const cw=Math.cos(w), sw=Math.sin(w), co=Math.cos(Om), so=Math.sin(Om), ci=Math.cos(i), si=Math.sin(i);
+  const x=(cw*co-sw*so*ci)*xOrb + (-sw*co-cw*so*ci)*yOrb;
+  const y=(cw*so+sw*co*ci)*xOrb + (-sw*so+cw*co*ci)*yOrb;
+  return {x,y};
+}
+function moonLongitude(T){
+  const D=normDeg(297.8501921+445267.1114034*T-0.0018819*T*T)*RAD;
+  const M=normDeg(357.5291092+35999.0502909*T-0.0001536*T*T)*RAD;
+  const Mp=normDeg(134.9633964+477198.8675055*T+0.0087414*T*T)*RAD;
+  const F=normDeg(93.2720950+483202.0175233*T-0.0036539*T*T)*RAD;
+  const Lp=normDeg(218.3164477+481267.88123421*T-0.0015786*T*T);
+  let s=6.288774*Math.sin(Mp)+1.274027*Math.sin(2*D-Mp)+0.658314*Math.sin(2*D)+0.213618*Math.sin(2*Mp)
+   -0.185116*Math.sin(M)-0.114332*Math.sin(2*F)+0.058793*Math.sin(2*D-2*Mp)+0.057066*Math.sin(2*D-M-Mp)
+   +0.053322*Math.sin(2*D+Mp)+0.045758*Math.sin(2*D-M)-0.040923*Math.sin(M-Mp)-0.034720*Math.sin(D)
+   -0.030383*Math.sin(M+Mp)+0.015327*Math.sin(2*D-2*F)-0.012528*Math.sin(Mp+2*F)+0.010980*Math.sin(Mp-2*F)
+   +0.010675*Math.sin(4*D-Mp)+0.010034*Math.sin(3*Mp)+0.008548*Math.sin(4*D-2*Mp)-0.007888*Math.sin(2*D+M-Mp)
+   -0.006766*Math.sin(2*D+M)-0.005163*Math.sin(D-Mp)+0.004987*Math.sin(D+M)+0.004036*Math.sin(2*D-M+Mp)
+   +0.003994*Math.sin(2*D+2*Mp)+0.003861*Math.sin(4*D)+0.003665*Math.sin(2*D-3*Mp)-0.002689*Math.sin(M-2*Mp)
+   -0.002602*Math.sin(2*D-Mp+2*F)+0.002390*Math.sin(2*D-M-Mp);
+  return normDeg(Lp+s);
+}
+function computeDayPositions(T){
+  const earth=heliocentric(ELEMENTS.Terra,T);
+  const out={};
+  out.Sol=normDeg(Math.atan2(earth.y,earth.x)/RAD+180);
+  out.Lua=moonLongitude(T);
+  out.NodoNorte=normDeg(125.04452-1934.136261*T);
+  ["Mercurio","Venus","Marte","Jupiter","Saturno","Urano","Netuno","Plutao","Quiron"].forEach(name=>{
+    const p=heliocentric(ELEMENTS[name],T);
+    out[name]=normDeg(Math.atan2(p.y-earth.y,p.x-earth.x)/RAD);
+  });
+  return out;
+}
+function obliquity(T){ return 23.439291111 - 0.0130042*T - 0.00000016*T*T + 0.000000504*T*T*T; }
+function gmstDeg(jd,T){ return normDeg(280.46061837 + 360.98564736629*(jd-2451545.0) + 0.000387933*T*T - (T*T*T)/38710000); }
+function ascMC(jd,T,lat,lonEast){
+  const ramcDeg = normDeg(gmstDeg(jd,T)+lonEast);
+  const ramc = ramcDeg*RAD;
+  const eps = obliquity(T)*RAD;
+  const latR = lat*RAD;
+  let mc = normDeg(Math.atan2(Math.sin(ramc), Math.cos(ramc)*Math.cos(eps))/RAD);
+  let asc = normDeg(Math.atan2(Math.cos(ramc), -(Math.sin(ramc)*Math.cos(eps)+Math.tan(latR)*Math.sin(eps)))/RAD);
+  return {asc,mc,ramc:ramcDeg};
+}
+function wholeSignCusps(asc){ const s=Math.floor(normDeg(asc)/30); const c=[]; for(let h=0;h<12;h++) c.push(normDeg((s+h)*30)); return c; }
+function equalCusps(asc){ const c=[]; for(let h=0;h<12;h++) c.push(normDeg(asc+h*30)); return c; }
+// Placidus: trisecção do arco semi-diurno/noturno (método iterativo padrão).
+// Refs: Munkasey "An Astrological House Formulary"; morinus-astrology.com/placidus-cusps.
+function placidusRA(ramc, tphi, teps, ra0, F, upper){
+  let ra = ra0;
+  for(let k=0;k<40;k++){
+    const raR = ra*RAD;
+    const inner = upper ? -Math.sin(raR)*tphi*teps : Math.sin(raR)*tphi*teps;
+    if(inner < -1 || inner > 1) return null; // sem solução real (latitude extrema)
+    const term = Math.acos(inner)/RAD;
+    ra = upper ? normDeg(ramc + term/F) : normDeg(ramc + 180 - term/F);
+  }
+  return ra;
+}
+function raToEclLon(raDeg, epsRad){
+  const raR = raDeg*RAD;
+  return normDeg(Math.atan2(Math.sin(raR), Math.cos(raR)*Math.cos(epsRad))/RAD);
+}
+function placidusCusps(asc,mc,ramc,lat,eps){
+  const tphi = Math.tan(lat*RAD), teps = Math.tan(eps*RAD);
+  const ra11 = placidusRA(ramc,tphi,teps, ramc+30, 3, true);
+  const ra12 = placidusRA(ramc,tphi,teps, ramc+60, 1.5, true);
+  const ra2  = placidusRA(ramc,tphi,teps, ramc+120, 1.5, false);
+  const ra3  = placidusRA(ramc,tphi,teps, ramc+150, 3, false);
+  if([ra11,ra12,ra2,ra3].some(v=>v===null)) return null;
+  const epsRad = eps*RAD;
+  const c11=raToEclLon(ra11,epsRad), c12=raToEclLon(ra12,epsRad), c2=raToEclLon(ra2,epsRad), c3=raToEclLon(ra3,epsRad);
+  const c = new Array(12);
+  c[0]=normDeg(asc); c[1]=c2; c[2]=c3; c[3]=normDeg(mc+180); c[4]=normDeg(c11+180); c[5]=normDeg(c12+180);
+  c[6]=normDeg(asc+180); c[7]=normDeg(c2+180); c[8]=normDeg(c3+180); c[9]=normDeg(mc); c[10]=c11; c[11]=c12;
+  return c;
+}
+function houseOf(lon,cusps){
+  for(let h=0;h<12;h++){
+    const c1=cusps[h], c2=cusps[(h+1)%12];
+    let span=normDeg(c2-c1); if(span===0) span=360;
+    let rel=normDeg(lon-c1);
+    if(rel<span) return h+1;
+  }
+  return 12;
+}
+function degMinStr(lonInSign){
+  const d=Math.floor(lonInSign);
+  let m=Math.round((lonInSign-d)*60);
+  let dd=d; if(m===60){m=0; dd+=1;}
+  return dd+"°"+String(m).padStart(2,'0')+"'";
+}
+function signOf(lon){ return Math.floor(normDeg(lon)/30); }
+
+const ASPECTS = [
+ {name:"Conjunção", glyph:"☌", angle:0, orb:8, w:1.0},
+ {name:"Oposição", glyph:"☍", angle:180, orb:8, w:0.9},
+ {name:"Quadratura", glyph:"□", angle:90, orb:7, w:0.85},
+ {name:"Trígono", glyph:"△", angle:120, orb:7, w:0.6},
+ {name:"Sextil", glyph:"⚹", angle:60, orb:5, w:0.45},
+ {name:"Quincúncio", glyph:"⚻", angle:150, orb:3, w:0.3},
+ {name:"Semissextil", glyph:"⚺", angle:30, orb:2, w:0.15},
+ {name:"Semiquadratura", glyph:"∠", angle:45, orb:2, w:0.2},
+ {name:"Sesquiquadratura", glyph:"⚼", angle:135, orb:2, w:0.2}
+];
+function orbFromAspect(lonT,lonN,angle){
+  let diff=Math.abs(normDeg(lonT-lonN));
+  if(diff>180) diff=360-diff;
+  return Math.abs(diff-angle);
+}
+function planetWeight(transitName,natalName){
+  const isSlowT = OUTER.includes(transitName) || SOCIAL.includes(transitName) || CENTAUR.includes(transitName);
+  const natalPersonal = PERSONAL.includes(natalName);
+  let w;
+  if(isSlowT && natalPersonal) w=1.0;
+  else if(isSlowT && !natalPersonal) w=0.55;
+  else if(!isSlowT && natalPersonal) w=0.45;
+  else w=0.3;
+  if(natalName==='Asc'||natalName==='MC') w*=1.15;
+  if(natalName==='Quiron') w*=1.1;
+  return w;
+}
+// Teto teórico do score bruto: aspecto 1.0 (conjunção) x peso do planeta 1.15 (bônus máx. Asc/MC) x orbe exato 1.0 x retrógrado 1.04
+const IMPACT_MAX_RAW = 1.0 * 1.15 * 1.0 * 1.04;
+function impactScore(aspect,orb,transitName,natalName,retro){
+  const orbFactor = Math.max(0,(1 - orb/aspect.orb));
+  let score = aspect.w * planetWeight(transitName,natalName) * orbFactor;
+  if(retro) score*=1.04;
+  return Math.round((score/IMPACT_MAX_RAW)*100);
+}
+function impactBar(score){
+  const level = Math.max(1,Math.min(5,Math.ceil(score/20)));
+  let s='<span class="impact-bar">';
+  for(let i=1;i<=5;i++) s+='<span class="'+(i<=level?'on':'')+'"></span>';
+  return s+'</span>';
+}
+
+// ---------- importar/exportar dados de entrada do mapa natal ----------
+function collectNatalInput(){
+  return {
+    data_nascimento: document.getElementById('natalDate').value || null,
+    hora_nascimento: document.getElementById('natalTime').value || null,
+    fuso_horario: document.getElementById('natalTz').value !== '' ? parseFloat(document.getElementById('natalTz').value) : null,
+    latitude: document.getElementById('natalLat').value !== '' ? parseFloat(document.getElementById('natalLat').value) : null,
+    longitude: document.getElementById('natalLon').value !== '' ? parseFloat(document.getElementById('natalLon').value) : null,
+    sistema_casas: document.getElementById('houseSystem').value
+  };
+}
+function exportNatalInput(){
+  const data = collectNatalInput();
+  const text = JSON.stringify(data, null, 2);
+  const blob = new Blob([text], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'mapa-natal-dados.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+function toggleImportBox(){
+  const box = document.getElementById('importBox');
+  box.style.display = (box.style.display==='none' || !box.style.display) ? 'block' : 'none';
+}
+function applyNatalInput(data){
+  if(data.data_nascimento) document.getElementById('natalDate').value = data.data_nascimento;
+  if(data.hora_nascimento) document.getElementById('natalTime').value = data.hora_nascimento;
+  if(data.fuso_horario!==null && data.fuso_horario!==undefined) document.getElementById('natalTz').value = data.fuso_horario;
+  if(data.latitude!==null && data.latitude!==undefined) document.getElementById('natalLat').value = data.latitude;
+  if(data.longitude!==null && data.longitude!==undefined) document.getElementById('natalLon').value = data.longitude;
+  if(data.sistema_casas) document.getElementById('houseSystem').value = data.sistema_casas;
+}
+function importNatalInput(){
+  const statusEl = document.getElementById('importStatus');
+  const fileInput = document.getElementById('importJsonFile');
+  const textVal = document.getElementById('importJsonText').value.trim();
+  function handleText(txt){
+    try{
+      const data = JSON.parse(txt);
+      applyNatalInput(data);
+      statusEl.textContent = 'Dados carregados. Clique em "Calcular mapa natal" para atualizar.';
+    }catch(e){
+      statusEl.textContent = 'JSON inválido: '+e.message;
+    }
+  }
+  if(fileInput.files && fileInput.files[0]){
+    const reader = new FileReader();
+    reader.onload = ()=>handleText(reader.result);
+    reader.onerror = ()=>{ statusEl.textContent='Não foi possível ler o arquivo.'; };
+    reader.readAsText(fileInput.files[0]);
+  } else if(textVal){
+    handleText(textVal);
+  } else {
+    statusEl.textContent = 'Cole um JSON ou selecione um arquivo primeiro.';
+  }
+}
+
+// ---------- preencher data/hora atuais (trânsito de data única) ----------
+function fillNow(){
+  const now = new Date();
+  const y = now.getFullYear();
+  const mo = String(now.getMonth()+1).padStart(2,'0');
+  const d = String(now.getDate()).padStart(2,'0');
+  const hh = String(now.getHours()).padStart(2,'0');
+  const mm = String(now.getMinutes()).padStart(2,'0');
+  document.getElementById('singleDate').value = y+'-'+mo+'-'+d;
+  document.getElementById('singleTime').value = hh+':'+mm;
+  document.getElementById('singleTz').value = -now.getTimezoneOffset()/60;
+}
+
+function toDateInputValue(dt){
+  return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');
+}
+function fillPreset(kind){
+  const now = new Date();
+  let start, end;
+  if(kind==='hoje'){
+    start = new Date(now.getFullYear(),now.getMonth(),now.getDate());
+    end = start;
+  } else if(kind==='semana'){
+    // semana domingo a sábado
+    const dow = now.getDay(); // 0=domingo..6=sábado
+    start = new Date(now.getFullYear(),now.getMonth(),now.getDate()-dow);
+    end = new Date(start.getFullYear(),start.getMonth(),start.getDate()+6);
+  } else if(kind==='mes'){
+    start = new Date(now.getFullYear(),now.getMonth(),1);
+    end = new Date(now.getFullYear(),now.getMonth()+1,0);
+  } else if(kind==='semestre'){
+    const semStartMonth = now.getMonth()<6 ? 0 : 6;
+    start = new Date(now.getFullYear(),semStartMonth,1);
+    end = new Date(now.getFullYear(),semStartMonth+6,0);
+  } else if(kind==='ano'){
+    start = new Date(now.getFullYear(),0,1);
+    end = new Date(now.getFullYear(),11,31);
+  } else return;
+
+  setMode('range');
+  document.getElementById('rangeStart').value = toDateInputValue(start);
+  document.getElementById('rangeEnd').value = toDateInputValue(end);
+}
+
+// ---------- busca de cidade (geocodificação) ----------
+let _cityResults = [];
+async function searchCity(){
+  const q = document.getElementById('citySearch').value.trim();
+  const resultsEl = document.getElementById('cityResults');
+  if(!q){ resultsEl.innerHTML=''; return; }
+  resultsEl.innerHTML = '<div class="hint" style="padding:6px 2px;">Buscando…</div>';
+  try{
+    const resp = await fetch('https://nominatim.openstreetmap.org/search?format=json&addressdetails=0&limit=6&q='+encodeURIComponent(q));
+    if(!resp.ok) throw new Error('resposta '+resp.status);
+    const data = await resp.json();
+    _cityResults = data;
+    if(!data.length){ resultsEl.innerHTML = '<div class="hint" style="padding:6px 2px;">Nenhum resultado. Tente incluir estado/país ou preencha manualmente.</div>'; return; }
+    resultsEl.innerHTML = data.map((d,idx)=>'<div class="cityOption" onclick="pickCity('+idx+')">'+d.display_name+'</div>').join('');
+  }catch(e){
+    resultsEl.innerHTML = '<div class="hint" style="padding:6px 2px;">Não foi possível buscar agora (sem conexão ou serviço indisponível). Preencha lat/long manualmente.</div>';
+  }
+}
+function pickCity(idx){
+  const d = _cityResults[idx];
+  if(!d) return;
+  document.getElementById('natalLat').value = parseFloat(d.lat).toFixed(4);
+  document.getElementById('natalLon').value = parseFloat(d.lon).toFixed(4);
+  document.getElementById('cityResults').innerHTML = '<div class="hint" style="padding:6px 2px;">Selecionado: '+d.display_name+'. Confirme o fuso horário no campo abaixo (atenção ao horário de verão vigente na data, se houver).</div>';
+}
+
+// ---------- state ----------
+let natalChart = null; // {positions:{}, cusps:[], asc, mc, hasHouses:bool}
+let transitData = null; // {mode, positions table rows, aspectRows}
+
+function setMode(m){
+  document.getElementById('modeSingleBtn').classList.toggle('active', m==='single');
+  document.getElementById('modeRangeBtn').classList.toggle('active', m==='range');
+  document.getElementById('singleFields').style.display = m==='single' ? '' : 'none';
+  document.getElementById('rangeFields').style.display = m==='range' ? '' : 'none';
+}
+
+function readDateParts(dateStr, timeStr, defaultHour){
+  if(!dateStr) return null;
+  const [y,mo,d] = dateStr.split('-').map(Number);
+  let hour = defaultHour;
+  if(timeStr){ const [hh,mm]=timeStr.split(':').map(Number); hour = hh + mm/60; }
+  return {y,mo,d,hour};
+}
+
+function calcNatal(){
+  const dp = readDateParts(document.getElementById('natalDate').value, document.getElementById('natalTime').value, 12);
+  if(!dp){ alert('Informe ao menos a data de nascimento.'); return; }
+  const tz = parseFloat(document.getElementById('natalTz').value)||0;
+  const lat = parseFloat(document.getElementById('natalLat').value);
+  const lon = parseFloat(document.getElementById('natalLon').value);
+  const hasTime = !!document.getElementById('natalTime').value;
+  const hasLoc = !isNaN(lat) && !isNaN(lon);
+
+  const jd = dateToJD_UT(dp.y,dp.mo,dp.d,dp.hour,tz);
+  const T = (jd-2451545.0)/36525;
+  const positions = computeDayPositions(T);
+
+  let cusps=null, asc=null, mc=null, hasHouses=false;
+  if(hasTime && hasLoc){
+    const r = ascMC(jd,T,lat,lon);
+    asc=r.asc; mc=r.mc;
+    const sys = document.getElementById('houseSystem').value;
+    if(sys==='whole') cusps = wholeSignCusps(asc);
+    else if(sys==='placidus'){
+      cusps = placidusCusps(asc,mc,r.ramc,lat,obliquity(T));
+      if(!cusps){
+        alert('Placidus não pôde ser calculado nessa latitude (muito próxima dos polos). Usando Casas Iguais como alternativa.');
+        cusps = equalCusps(asc);
+      }
+    } else {
+      cusps = equalCusps(asc);
+    }
+    hasHouses = true;
+  }
+
+  natalChart = {positions, cusps, asc, mc, hasHouses, jd, T};
+  renderNatal();
+}
+
+function renderNatal(){
+  const el = document.getElementById('natalOutput');
+  if(!natalChart){ el.innerHTML='<div class="empty">Calcule o mapa natal.</div>'; return; }
+  let rows='';
+  const order = ["Sol","Lua","Mercurio","Venus","Marte","Jupiter","Saturno","Urano","Netuno","Plutao","Quiron","NodoNorte"];
+  order.forEach(name=>{
+    const lon = natalChart.positions[name];
+    const sIdx = signOf(lon);
+    const house = natalChart.hasHouses ? houseOf(lon,natalChart.cusps) : '—';
+    rows += '<tr><td><span class="glyph natal">'+PLANET_GLYPH[name]+'</span>'+PLANET_LABEL[name]+'</td><td>'+SIGN_GLYPH[sIdx]+' '+SIGNS[sIdx]+'</td><td>'+degMinStr(lon%30)+'</td><td>'+(house!=='—'?('Casa '+house):'—')+'</td></tr>';
+  });
+  if(natalChart.hasHouses){
+    const ascS=signOf(natalChart.asc), mcS=signOf(natalChart.mc);
+    rows += '<tr><td><span class="glyph natal">Asc</span>Ascendente</td><td>'+SIGN_GLYPH[ascS]+' '+SIGNS[ascS]+'</td><td>'+degMinStr(natalChart.asc%30)+'</td><td>Casa 1</td></tr>';
+    rows += '<tr><td><span class="glyph natal">MC</span>Meio do Céu</td><td>'+SIGN_GLYPH[mcS]+' '+SIGNS[mcS]+'</td><td>'+degMinStr(natalChart.mc%30)+'</td><td>Casa 10*</td></tr>';
+  }
+  let warn = natalChart.hasHouses ? '' : '<div class="hint" style="margin-bottom:10px;"><span class="badge-required">Sem hora/local completos:</span> Ascendente e Casas não foram calculados — apenas signo e grau dos planetas.</div>';
+  el.innerHTML = warn + '<table id="natalSummary"><thead><tr><th>Ponto</th><th>Signo</th><th>Grau</th><th>Casa</th></tr></thead><tbody>'+rows+'</tbody></table>'
+    + (natalChart.hasHouses ? '<div class="hint" style="margin-top:8px;">*MC nem sempre cai exatamente na cúspide da Casa 10 no sistema de Signos Inteiros — isso é esperado.</div>' : '');
+}
+
+function calcTransits(){
+  if(!natalChart){ alert('Calcule o mapa natal primeiro.'); return; }
+  const isSingle = document.getElementById('modeSingleBtn').classList.contains('active');
+  const statusEl = document.getElementById('transitStatus');
+  statusEl.textContent = 'Calculando...';
+  setTimeout(()=>{
+    if(isSingle) computeSingle(); else computeRange();
+    statusEl.textContent = '';
+  }, 30);
+}
+
+function natalPointList(){
+  const pts = ["Sol","Lua","Mercurio","Venus","Marte","Jupiter","Saturno","Urano","Netuno","Plutao","Quiron","NodoNorte"];
+  if(natalChart.hasHouses) pts.push("Asc","MC");
+  return pts;
+}
+function natalLon(name){
+  if(name==='Asc') return natalChart.asc;
+  if(name==='MC') return natalChart.mc;
+  return natalChart.positions[name];
+}
+
+function computeSingle(){
+  const dp = readDateParts(document.getElementById('singleDate').value, document.getElementById('singleTime').value, 12);
+  if(!dp){ alert('Informe a data do trânsito.'); return; }
+  const tz = parseFloat(document.getElementById('singleTz').value)||0;
+  const jd = dateToJD_UT(dp.y,dp.mo,dp.d,dp.hour,tz);
+  const T = (jd-2451545.0)/36525;
+  const pos = computeDayPositions(T);
+  const posNext = computeDayPositions(T+1/36525);
+
+  const positionRows = TRANSIT_BODIES.map(name=>{
+    const lon = pos[name];
+    const speed = (()=>{ let d=posNext[name]-lon; if(d>180)d-=360; if(d<-180)d+=360; return d; })();
+    const retro = speed<0;
+    const sIdx = signOf(lon);
+    const house = natalChart.hasHouses ? houseOf(lon,natalChart.cusps) : null;
+    return {name, lon, sIdx, house, retro, speed};
+  });
+
+  const natalPts = natalPointList();
+  const aspectRows = [];
+  TRANSIT_BODIES.forEach(tname=>{
+    const lon = pos[tname];
+    const lonNext = posNext[tname];
+    natalPts.forEach(nname=>{
+      const nlon = natalLon(nname);
+      ASPECTS.forEach(asp=>{
+        const orb = orbFromAspect(lon,nlon,asp.angle);
+        if(orb<=asp.orb){
+          const orbNext = orbFromAspect(lonNext,nlon,asp.angle);
+          const applying = orbNext < orb;
+          const retro = positionRows.find(p=>p.name===tname).retro;
+          const score = impactScore(asp,orb,tname,nname,retro);
+          aspectRows.push({
+            transit:tname, natal:nname, aspect:asp, orb, applying, retro,
+            sIdx: signOf(lon), house: natalChart.hasHouses ? houseOf(lon,natalChart.cusps) : null,
+            score, dateLabel: null
+          });
+        }
+      });
+    });
+  });
+
+  transitData = {mode:'single', positionRows, aspectRows};
+  renderResults();
+}
+
+function computeRange(){
+  const s = document.getElementById('rangeStart').value;
+  const en = document.getElementById('rangeEnd').value;
+  const step = Math.max(1, parseInt(document.getElementById('rangeStep').value)||1);
+  if(!s || !en){ alert('Informe data inicial e final.'); return; }
+  const [sy,smo,sd] = s.split('-').map(Number);
+  const [ey,emo,ed] = en.split('-').map(Number);
+  const jdStart = toJD(sy,smo,sd,12);
+  const jdEnd = toJD(ey,emo,ed,12);
+  if(jdEnd<jdStart){ alert('Data final deve ser igual ou depois da inicial.'); return; }
+
+  const days=[];
+  for(let jd=jdStart; jd<=jdEnd; jd+=step) days.push(jd);
+
+  const dayPositions = days.map(jd=>{
+    const T=(jd-2451545.0)/36525;
+    return computeDayPositions(T);
+  });
+
+  const natalPts = natalPointList();
+  const events = {}; // key -> current open window
+
+  function jdToDateLabel(jd){
+    // convert JD (approx noon) back to calendar date
+    const z = Math.floor(jd+0.5);
+    const f = jd+0.5-z;
+    let A=z;
+    if(z>=2299161){ const alpha=Math.floor((z-1867216.25)/36524.25); A=z+1+alpha-Math.floor(alpha/4); }
+    const B=A+1524, C=Math.floor((B-122.1)/365.25), D=Math.floor(365.25*C), E=Math.floor((B-D)/30.6001);
+    const day=B-D-Math.floor(30.6001*E);
+    const month = E<14 ? E-1 : E-13;
+    const year = month>2 ? C-4716 : C-4715;
+    return String(day).padStart(2,'0')+'/'+String(month).padStart(2,'0')+'/'+year;
+  }
+
+  const finishedEvents = [];
+
+  TRANSIT_BODIES.forEach(tname=>{
+    natalPts.forEach(nname=>{
+      const nlon = natalLon(nname);
+      ASPECTS.forEach(asp=>{
+        const key = tname+'|'+nname+'|'+asp.name;
+        let open=null;
+        days.forEach((jd,idx)=>{
+          const lon = dayPositions[idx][tname];
+          const orb = orbFromAspect(lon,nlon,asp.angle);
+          const active = orb<=asp.orb;
+          if(active){
+            if(!open) open={startIdx:idx,minOrb:orb,minIdx:idx};
+            else if(orb<open.minOrb){ open.minOrb=orb; open.minIdx=idx; }
+          } else {
+            if(open){
+              finishedEvents.push(closeEvent(open,idx-1));
+              open=null;
+            }
+          }
+        });
+        if(open) finishedEvents.push(closeEvent(open,days.length-1));
+
+        function closeEvent(o,endIdx){
+          const exactJd = days[o.minIdx];
+          const lonAtExact = dayPositions[o.minIdx][tname];
+          const T=(exactJd-2451545.0)/36525;
+          const posNext = computeDayPositions(T+1/36525);
+          let speed = posNext[tname]-lonAtExact; if(speed>180)speed-=360; if(speed<-180)speed+=360;
+          const retro = speed<0;
+          const score = impactScore(asp,o.minOrb,tname,nname,retro);
+          return {
+            transit:tname, natal:nname, aspect:asp, orb:o.minOrb, retro,
+            sIdx: signOf(lonAtExact), house: natalChart.hasHouses ? houseOf(lonAtExact,natalChart.cusps) : null,
+            score,
+            startLabel: jdToDateLabel(days[o.startIdx]),
+            exactLabel: jdToDateLabel(exactJd),
+            endLabel: jdToDateLabel(days[endIdx]),
+            touchesStart: o.startIdx===0,
+            touchesEnd: endIdx===days.length-1,
+            applying: null
+          };
+        }
+      });
+    });
+  });
+
+  // position rows: snapshot at range end, for a quick "onde está cada planeta agora" reference
+  const lastPos = dayPositions[dayPositions.length-1];
+  const prevPos = dayPositions.length>1 ? dayPositions[dayPositions.length-2] : lastPos;
+  const positionRows = TRANSIT_BODIES.map(name=>{
+    const lon=lastPos[name];
+    let speed=lon-prevPos[name]; if(speed>180)speed-=360; if(speed<-180)speed+=360;
+    return {name, lon, sIdx:signOf(lon), house: natalChart.hasHouses?houseOf(lon,natalChart.cusps):null, retro:speed<0, speed};
+  });
+
+  transitData = {mode:'range', positionRows, aspectRows:finishedEvents, rangeLabel: days.length+' dias ('+jdToDateLabel(jdStart)+' a '+jdToDateLabel(jdEnd)+')'};
+  renderResults();
+}
+
+function renderResults(){
+  document.getElementById('resultsPanel').style.display='';
+
+  // positions table
+  const posTable = document.getElementById('positionsTable');
+  posTable.querySelector('thead').innerHTML = '<tr><th>Planeta</th><th>Signo</th><th>Grau</th><th>Casa natal</th><th>Status</th></tr>';
+  posTable.querySelector('tbody').innerHTML = transitData.positionRows.map(p=>{
+    return '<tr><td><span class="glyph">'+PLANET_GLYPH[p.name]+'</span>'+PLANET_LABEL[p.name]+'</td>'
+      +'<td>'+SIGN_GLYPH[p.sIdx]+' '+SIGNS[p.sIdx]+'</td>'
+      +'<td>'+degMinStr(p.lon%30)+'</td>'
+      +'<td>'+(p.house?('Casa '+p.house):'—')+'</td>'
+      +'<td>'+(p.retro?'<span class="tag retro">Retrógrado</span>':'<span class="tag">Direto</span>')+'</td></tr>';
+  }).join('');
+
+  // populate filters
+  const fPlanet=document.getElementById('fPlanet'), fSign=document.getElementById('fSign'),
+        fHouse=document.getElementById('fHouse'), fAspect=document.getElementById('fAspect'),
+        fNatal=document.getElementById('fNatal');
+  fPlanet.innerHTML='<option value="">Todos</option>'
+    +'<optgroup label="Grupos">'+Object.keys(PLANET_GROUPS).map(g=>'<option value="grupo:'+g+'">'+g+'</option>').join('')+'</optgroup>'
+    +'<optgroup label="Planetas individuais">'+TRANSIT_BODIES.map(n=>'<option value="'+n+'">'+PLANET_LABEL[n]+'</option>').join('')+'</optgroup>';
+  fSign.innerHTML='<option value="">Todos</option>'+SIGNS.map((s,i)=>'<option value="'+i+'">'+s+'</option>').join('');
+  if(natalChart.hasHouses){
+    fHouse.innerHTML='<option value="">Todas</option>'+[1,2,3,4,5,6,7,8,9,10,11,12].map(h=>'<option value="'+h+'">Casa '+h+'</option>').join('');
+    fHouse.parentElement.style.display='';
+  } else {
+    fHouse.parentElement.style.display='none';
+  }
+  fAspect.innerHTML='<option value="">Todos</option>'+ASPECTS.map(a=>'<option value="'+a.name+'">'+a.name+'</option>').join('');
+  const natalPts = natalPointList();
+  fNatal.innerHTML='<option value="">Todos</option>'+natalPts.map(n=>'<option value="'+n+'">'+PLANET_LABEL[n]+'</option>').join('');
+
+  [fPlanet,fSign,fHouse,fAspect,fNatal].forEach(f=>f.onchange=renderAspectsTable);
+  document.getElementById('fImpact').oninput=renderAspectsTable;
+  document.getElementById('fLimit').oninput=renderAspectsTable;
+  renderAspectsTable();
+}
+
+function planetMatchesFilter(transitName, fPlanet){
+  if(!fPlanet) return true;
+  if(fPlanet.startsWith('grupo:')){
+    const group = fPlanet.slice(6);
+    return (PLANET_GROUPS[group]||[]).includes(transitName);
+  }
+  return transitName===fPlanet;
+}
+
+function phaseTag(r){
+  if(r.touchesStart && r.touchesEnd) return '<span class="tag phase-ongoing">Em curso</span>';
+  if(r.touchesStart) return '<span class="tag phase-ending">Encerrando</span>';
+  if(r.touchesEnd) return '<span class="tag phase-new">Novo</span>';
+  return '';
+}
+function isBackground(r){
+  // pano de fundo: ritmo não-rápido, e a janela do aspecto atravessa o período inteiro
+  // (já vinha de antes e continua depois) — não é um evento pontual daquele intervalo.
+  const sp = speedTag(r.transit, r.aspect.orb);
+  return sp.cls!=='fast' && r.touchesStart && r.touchesEnd;
+}
+function aspectRowHtml(r, isRange){
+  const statusTags = (isRange ? '' : (r.applying? '<span class="tag applying">Aplicando</span>':'<span class="tag separating">Separando</span>')+' ')
+    + (r.retro ? '<span class="tag retro">Retróg.</span>' : '');
+  const sp = speedTag(r.transit, r.aspect.orb);
+  const ritmoCell = '<span class="tag '+sp.cls+'" title="Duração típica desse aspecto: '+sp.approx+'">'+sp.label+'</span>';
+  const periodCell = isRange
+    ? (r.startLabel===r.endLabel ? r.exactLabel : r.startLabel+' → '+r.endLabel+' <span class="hint">(exato '+r.exactLabel+')</span>')+' '+phaseTag(r)
+    : statusTags;
+  return '<tr>'
+    +'<td>'+impactBar(r.score)+' <span class="hint">'+r.score+'</span></td>'
+    +'<td><span class="glyph">'+PLANET_GLYPH[r.transit]+'</span>'+PLANET_LABEL[r.transit]+' '+SIGN_GLYPH[r.sIdx]+'</td>'
+    +'<td>'+r.aspect.glyph+' '+r.aspect.name+'</td>'
+    +'<td><span class="glyph natal">'+PLANET_GLYPH[r.natal]+'</span>'+PLANET_LABEL[r.natal]+'</td>'
+    +'<td>'+r.orb.toFixed(2)+'°</td>'
+    +'<td>'+ritmoCell+'</td>'
+    +'<td>'+periodCell+'</td>'
+    +'<td>'+(r.house?('Casa '+r.house):'—')+'</td>'
+    +'</tr>';
+}
+
+function renderAspectsTable(){
+  const fPlanet=document.getElementById('fPlanet').value;
+  const fSign=document.getElementById('fSign').value;
+  const fHouse=document.getElementById('fHouse').value;
+  const fAspect=document.getElementById('fAspect').value;
+  const fNatal=document.getElementById('fNatal').value;
+  const fImpact=parseInt(document.getElementById('fImpact').value)||0;
+
+  let rows = transitData.aspectRows.filter(r=>{
+    if(!planetMatchesFilter(r.transit,fPlanet)) return false;
+    if(fSign && String(r.sIdx)!==fSign) return false;
+    if(fHouse && String(r.house)!==fHouse) return false;
+    if(fAspect && r.aspect.name!==fAspect) return false;
+    if(fNatal && r.natal!==fNatal) return false;
+    if(r.score<fImpact) return false;
+    return true;
+  });
+  rows.sort((a,b)=>b.score-a.score);
+
+  const limitVal = parseInt(document.getElementById('fLimit').value);
+  const limit = (limitVal>0) ? limitVal : null;
+
+  const isRange = transitData.mode==='range';
+  let bgRowsAll = isRange ? rows.filter(isBackground) : [];
+  let periodRowsAll = isRange ? rows.filter(r=>!isBackground(r)) : rows;
+  const bgRows = limit ? bgRowsAll.slice(0,limit) : bgRowsAll;
+  const periodRows = limit ? periodRowsAll.slice(0,limit) : periodRowsAll;
+
+  const countText = isRange
+    ? (periodRows.length+' de '+periodRowsAll.length+' evento(s) do período'+(bgRowsAll.length?', '+bgRows.length+' de '+bgRowsAll.length+' de pano de fundo':''))
+    : (limit ? periodRows.length+' de '+periodRowsAll.length+' aspecto(s) encontrado(s)' : rows.length+' aspecto(s) encontrado(s)');
+  document.getElementById('resultCount').textContent = countText;
+
+  const bgBlock = document.getElementById('backgroundBlock');
+  const bgTable = document.getElementById('backgroundTable');
+  if(isRange && bgRows.length){
+    bgBlock.style.display='';
+    bgTable.querySelector('thead').innerHTML = '<tr><th>Impacto</th><th>Trânsito</th><th>Aspecto</th><th>Natal</th><th>Orbe</th><th>Ritmo</th><th>Período</th><th>Casa</th></tr>';
+    bgTable.querySelector('tbody').innerHTML = bgRows.map(r=>aspectRowHtml(r,true)).join('');
+  } else {
+    bgBlock.style.display='none';
+  }
+
+  document.getElementById('periodHeading').style.display = (isRange && bgRows.length) ? '' : 'none';
+
+  const table = document.getElementById('aspectsTable');
+  table.querySelector('thead').innerHTML = '<tr><th>Impacto</th><th>Trânsito</th><th>Aspecto</th><th>Natal</th><th>Orbe</th><th>Ritmo</th><th>'+(isRange?'Período':'Status')+'</th><th>Casa</th></tr>';
+  table.querySelector('tbody').innerHTML = periodRows.map(r=>aspectRowHtml(r,isRange)).join('')
+    || '<tr><td colspan="8" class="empty">Nenhum aspecto com os filtros atuais.</td></tr>';
+}
+
+function copyForAI(){
+  const fPlanet=document.getElementById('fPlanet').value;
+  const fSign=document.getElementById('fSign').value;
+  const fHouse=document.getElementById('fHouse').value;
+  const fAspect=document.getElementById('fAspect').value;
+  const fNatal=document.getElementById('fNatal').value;
+  const fImpact=parseInt(document.getElementById('fImpact').value)||0;
+  let rows = transitData.aspectRows.filter(r=>{
+    if(!planetMatchesFilter(r.transit,fPlanet)) return false;
+    if(fSign && String(r.sIdx)!==fSign) return false;
+    if(fHouse && String(r.house)!==fHouse) return false;
+    if(fAspect && r.aspect.name!==fAspect) return false;
+    if(fNatal && r.natal!==fNatal) return false;
+    if(r.score<fImpact) return false;
+    return true;
+  });
+  rows.sort((a,b)=>b.score-a.score);
+
+  function aspectLineText(r, idx, isRange){
+    let line = (idx+1)+". Trânsito de "+PLANET_LABEL[r.transit]+" em "+SIGNS[r.sIdx]+(r.house?(" (Casa "+r.house+")"):"")+" forma "+r.aspect.name.toLowerCase()+" (orbe "+r.orb.toFixed(2)+"°) com "+PLANET_LABEL[r.natal]+" natal";
+    if(isRange){
+      line += " — ativo de "+r.startLabel+" a "+r.endLabel+", exato em "+r.exactLabel;
+      if(r.touchesStart && r.touchesEnd) line += " (em curso: já vinha de antes do período e continua depois)";
+      else if(r.touchesStart) line += " (encerrando: já vinha de antes do período)";
+      else if(r.touchesEnd) line += " (novo: começa dentro do período e continua depois)";
+    } else {
+      line += " — "+(r.applying?"aplicando":"separando");
+    }
+    if(r.retro) line += ", retrógrado";
+    const sp = speedTag(r.transit, r.aspect.orb);
+    line += ", ritmo "+sp.label.toLowerCase()+" (duração típica "+sp.approx+")";
+    line += ". [impacto "+r.score+"/100]";
+    return line;
+  }
+
+  let text = "MAPA NATAL\n";
+  natalPointList().forEach(name=>{
+    const lon = natalLon(name);
+    const house = natalChart.hasHouses ? houseOf(lon,natalChart.cusps) : null;
+    text += "- "+PLANET_LABEL[name]+": "+SIGNS[signOf(lon)]+" "+degMinStr(lon%30)+(house?(", Casa "+house):"")+"\n";
+  });
+
+  text += "\nPOSIÇÕES EM TRÂNSITO\n";
+  transitData.positionRows.forEach(p=>{
+    text += "- "+PLANET_LABEL[p.name]+": "+SIGNS[p.sIdx]+" "+degMinStr(p.lon%30)+(p.house?(", Casa natal "+p.house):"")+(p.retro?" (retrógrado)":"")+"\n";
+  });
+
+  const isRange = transitData.mode==='range';
+  const limitVal = parseInt(document.getElementById('fLimit').value);
+  const limit = (limitVal>0) ? limitVal : null;
+  let bgRowsAll = isRange ? rows.filter(isBackground) : [];
+  let periodRowsAll = isRange ? rows.filter(r=>!isBackground(r)) : rows;
+  const bgRows = limit ? bgRowsAll.slice(0,limit) : bgRowsAll;
+  const periodRows = limit ? periodRowsAll.slice(0,limit) : periodRowsAll;
+
+  if(isRange && bgRowsAll.length){
+    text += "\nPANO DE FUNDO ("+bgRows.length+" de "+bgRowsAll.length+" — trânsitos lentos já em curso, que atravessam todo o período "+transitData.rangeLabel+"; considere-os o tema estrutural dessa fase, não eventos pontuais dela)\n";
+    bgRows.forEach((r,idx)=>{ text += aspectLineText(r,idx,true)+"\n"; });
+
+    text += "\nEVENTOS DO PERÍODO ("+periodRows.length+" de "+periodRowsAll.length+" — ordenados por impacto, específicos de "+transitData.rangeLabel+")\n";
+    periodRows.forEach((r,idx)=>{ text += aspectLineText(r,idx,true)+"\n"; });
+  } else {
+    text += "\nASPECTOS (ordenados por impacto, "+periodRows.length+" de "+periodRowsAll.length+(isRange?(", "+transitData.rangeLabel):"")+")\n";
+    periodRows.forEach((r,idx)=>{ text += aspectLineText(r,idx,isRange)+"\n"; });
+  }
+
+  text += "\nPor favor, interprete esses trânsitos considerando meu mapa natal. Trate os itens de PANO DE FUNDO (se houver) como o tema estrutural da fase, e os EVENTOS DO PERÍODO como o que é específico desse momento — priorizando estes últimos por impacto.";
+
+  const box = document.getElementById('copyBox');
+  box.textContent = text;
+  box.style.display='block';
+  const ta = document.getElementById('copyArea');
+  ta.value = text;
+  ta.select();
+  try{
+    navigator.clipboard.writeText(text);
+  }catch(e){
+    document.execCommand('copy');
+  }
+}
+</script>
+</body>
+</html>
