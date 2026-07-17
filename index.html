@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Efeméride Pessoal — Sistema de Trânsitos Astrológicos</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8ZGVmcz4KICAgIDxtYXNrIGlkPSJtIj4KICAgICAgPHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIGZpbGw9IndoaXRlIi8+CiAgICAgIDxjaXJjbGUgY3g9IjY0IiBjeT0iMzYiIHI9IjI5IiBmaWxsPSJibGFjayIvPgogICAgPC9tYXNrPgogIDwvZGVmcz4KICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0OCIgZmlsbD0iIzBCMEUxQSIvPgogIDxjaXJjbGUgY3g9IjQ2IiBjeT0iNTAiIHI9IjMxIiBmaWxsPSIjQzlBMjRCIiBtYXNrPSJ1cmwoI20pIi8+CiAgPGNpcmNsZSBjeD0iNzkiIGN5PSIyNCIgcj0iMyIgZmlsbD0iI0M5QTI0QiIvPgogIDxjaXJjbGUgY3g9IjIwIiBjeT0iNzIiIHI9IjIiIGZpbGw9IiM5QzhGRTAiLz4KPC9zdmc+Cg==">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -104,6 +105,10 @@
   #natalSummary td, #natalSummary th{ font-size:12.5px; }
   .badge-required{ color:var(--rose); }
   .scroll-wrap{ max-height:560px; overflow:auto; border:1px solid var(--line); border-radius:8px; }
+  .scroll-hint{ display:none; }
+  @media(max-width:760px){
+    .scroll-hint{ display:block; font-size:11px; color:var(--text-faint); margin:-6px 0 10px; }
+  }
   .toolbar{ display:flex; gap:10px; flex-wrap:wrap; }
   .cityOption{ padding:8px 10px; font-size:12.5px; color:var(--text-dim); border:1px solid var(--line); border-top:none; cursor:pointer; background:#0D1122; }
   .cityOption:first-child{ border-top:1px solid var(--line); border-radius:6px 6px 0 0; }
@@ -175,7 +180,9 @@
   <div class="toolbar" style="margin-bottom:12px;">
     <button class="btn secondary small" onclick="exportNatalInput()">Exportar dados (JSON)</button>
     <button class="btn secondary small" onclick="toggleImportBox()">Importar dados (JSON)</button>
+    <button class="btn secondary small" onclick="clearNatalStorage()">Esquecer dados salvos</button>
   </div>
+  <div class="hint" style="margin-bottom:12px;">Seus dados de nascimento ficam salvos só neste navegador (localStorage) e são recarregados automaticamente na próxima visita — nada é enviado para fora.</div>
   <div id="importBox" style="display:none; margin-bottom:16px;">
     <label>Colar JSON aqui</label>
     <textarea id="importJsonText" rows="4" style="width:100%; background:#0D1122; border:1px solid var(--line); color:var(--text); padding:9px 10px; border-radius:6px; font-family:inherit; font-size:12.5px;" placeholder='{"data_nascimento":"1990-05-15","hora_nascimento":"14:30","fuso_horario":-3,"latitude":-23.5505,"longitude":-46.6333,"sistema_casas":"placidus"}'></textarea>
@@ -191,6 +198,7 @@
     <div class="hint" id="importStatus" style="margin-top:6px;"></div>
   </div>
   <button class="btn" onclick="calcNatal()">Calcular mapa natal</button>
+  <div class="hint" id="natalMsg" style="margin-top:8px;"></div>
   <div class="divider"></div>
   <div id="natalOutput"><div class="empty">Preencha os dados e calcule para ver seu mapa natal aqui.</div></div>
 </div>
@@ -236,6 +244,7 @@
 <!-- ===================== RESULTADOS ===================== -->
 <div class="panel" id="resultsPanel" style="display:none;">
   <h2>3. Posições em trânsito</h2>
+  <div class="scroll-hint">↔ as tabelas têm mais colunas do que cabem na tela — arraste para os lados para ver tudo.</div>
   <div class="scroll-wrap" style="margin-bottom:26px;">
     <table id="positionsTable"><thead></thead><tbody></tbody></table>
   </div>
@@ -275,20 +284,34 @@
   <div class="resultsbar">
     <span class="count" id="resultCount"></span>
     <div class="toolbar">
-      <button class="btn secondary small" onclick="copyForAI()">Copiar para IA interpretar</button>
+      <button class="btn secondary small" onclick="copyForAI('all', this)">Copiar tudo para IA</button>
+      <button class="btn secondary small" onclick="exportResultsJson()">Exportar JSON</button>
+      <button class="btn secondary small" onclick="exportResultsCsv()">Exportar CSV</button>
     </div>
   </div>
 
   <div id="backgroundBlock" style="display:none">
     <h3 class="subhead">Pano de fundo <span class="hint">— trânsitos lentos já em curso, que atravessam todo o período calculado</span></h3>
-    <div class="scroll-wrap" style="margin-bottom:26px;">
+    <div class="scroll-wrap" style="margin-bottom:10px;">
       <table id="backgroundTable"><thead></thead><tbody></tbody></table>
+    </div>
+    <div class="resultsbar" style="margin-bottom:26px;">
+      <span></span>
+      <div class="toolbar">
+        <button class="btn secondary small" onclick="copyForAI('background', this)">Copiar pano de fundo</button>
+      </div>
     </div>
   </div>
 
   <h3 class="subhead period" id="periodHeading" style="display:none;">Eventos do período</h3>
-  <div class="scroll-wrap">
+  <div class="scroll-wrap" style="margin-bottom:10px;">
     <table id="aspectsTable"><thead></thead><tbody></tbody></table>
+  </div>
+  <div class="resultsbar" id="periodCopyBar" style="display:none;">
+    <span></span>
+    <div class="toolbar">
+      <button class="btn secondary small" onclick="copyForAI('period', this)">Copiar eventos do período</button>
+    </div>
   </div>
   <div class="copybox" id="copyBox"></div>
   <textarea id="copyArea"></textarea>
@@ -538,6 +561,25 @@ function collectNatalInput(){
     sistema_casas: document.getElementById('houseSystem').value
   };
 }
+
+// ---------- persistência local (localStorage) ----------
+const NATAL_STORAGE_KEY = 'efemeride_natal_dados_v1';
+function saveNatalToStorage(){
+  try{ localStorage.setItem(NATAL_STORAGE_KEY, JSON.stringify(collectNatalInput())); }
+  catch(e){ /* localStorage indisponível (aba anônima, etc.) — segue sem salvar */ }
+}
+function loadNatalFromStorage(){
+  try{
+    const raw = localStorage.getItem(NATAL_STORAGE_KEY);
+    if(!raw) return false;
+    applyNatalInput(JSON.parse(raw));
+    return true;
+  }catch(e){ return false; }
+}
+function clearNatalStorage(){
+  try{ localStorage.removeItem(NATAL_STORAGE_KEY); }catch(e){}
+  setNatalMsg('Dados salvos neste navegador foram apagados. Os campos acima continuam preenchidos até você recarregar a página.', '');
+}
 function exportNatalInput(){
   const data = collectNatalInput();
   const text = JSON.stringify(data, null, 2);
@@ -677,9 +719,21 @@ function readDateParts(dateStr, timeStr, defaultHour){
   return {y,mo,d,hour};
 }
 
+function setNatalMsg(msg, level){
+  const el = document.getElementById('natalMsg');
+  el.textContent = msg;
+  el.style.color = level==='error' ? 'var(--rose)' : level==='warn' ? 'var(--gold-dim)' : '';
+}
+function setTransitStatus(msg, isError){
+  const el = document.getElementById('transitStatus');
+  el.textContent = msg;
+  el.style.color = isError ? 'var(--rose)' : '';
+}
+
 function calcNatal(){
+  setNatalMsg('', '');
   const dp = readDateParts(document.getElementById('natalDate').value, document.getElementById('natalTime').value, 12);
-  if(!dp){ alert('Informe ao menos a data de nascimento.'); return; }
+  if(!dp){ setNatalMsg('Informe ao menos a data de nascimento.', 'error'); return; }
   const tz = parseFloat(document.getElementById('natalTz').value)||0;
   const lat = parseFloat(document.getElementById('natalLat').value);
   const lon = parseFloat(document.getElementById('natalLon').value);
@@ -699,7 +753,7 @@ function calcNatal(){
     else if(sys==='placidus'){
       cusps = placidusCusps(asc,mc,r.ramc,lat,obliquity(T));
       if(!cusps){
-        alert('Placidus não pôde ser calculado nessa latitude (muito próxima dos polos). Usando Casas Iguais como alternativa.');
+        setNatalMsg('Placidus não pôde ser calculado nessa latitude (muito próxima dos polos). Usando Casas Iguais como alternativa.', 'warn');
         cusps = equalCusps(asc);
       }
     } else {
@@ -710,6 +764,7 @@ function calcNatal(){
 
   natalChart = {positions, cusps, asc, mc, hasHouses, jd, T};
   renderNatal();
+  saveNatalToStorage();
 }
 
 function renderNatal(){
@@ -734,13 +789,12 @@ function renderNatal(){
 }
 
 function calcTransits(){
-  if(!natalChart){ alert('Calcule o mapa natal primeiro.'); return; }
+  if(!natalChart){ setTransitStatus('Calcule o mapa natal primeiro.', true); return; }
   const isSingle = document.getElementById('modeSingleBtn').classList.contains('active');
-  const statusEl = document.getElementById('transitStatus');
-  statusEl.textContent = 'Calculando...';
+  setTransitStatus('Calculando...', false);
   setTimeout(()=>{
-    if(isSingle) computeSingle(); else computeRange();
-    statusEl.textContent = '';
+    const ok = isSingle ? computeSingle() : computeRange();
+    if(ok!==false) setTransitStatus('', false);
   }, 30);
 }
 
@@ -757,7 +811,7 @@ function natalLon(name){
 
 function computeSingle(){
   const dp = readDateParts(document.getElementById('singleDate').value, document.getElementById('singleTime').value, 12);
-  if(!dp){ alert('Informe a data do trânsito.'); return; }
+  if(!dp){ setTransitStatus('Informe a data do trânsito.', true); return false; }
   const tz = parseFloat(document.getElementById('singleTz').value)||0;
   const jd = dateToJD_UT(dp.y,dp.mo,dp.d,dp.hour,tz);
   const T = (jd-2451545.0)/36525;
@@ -805,12 +859,12 @@ function computeRange(){
   const s = document.getElementById('rangeStart').value;
   const en = document.getElementById('rangeEnd').value;
   const step = Math.max(1, parseInt(document.getElementById('rangeStep').value)||1);
-  if(!s || !en){ alert('Informe data inicial e final.'); return; }
+  if(!s || !en){ setTransitStatus('Informe data inicial e final.', true); return false; }
   const [sy,smo,sd] = s.split('-').map(Number);
   const [ey,emo,ed] = en.split('-').map(Number);
   const jdStart = toJD(sy,smo,sd,12);
   const jdEnd = toJD(ey,emo,ed,12);
-  if(jdEnd<jdStart){ alert('Data final deve ser igual ou depois da inicial.'); return; }
+  if(jdEnd<jdStart){ setTransitStatus('Data final deve ser igual ou depois da inicial.', true); return false; }
 
   const days=[];
   for(let jd=jdStart; jd<=jdEnd; jd+=step) days.push(jd);
@@ -1020,6 +1074,7 @@ function renderAspectsTable(){
   }
 
   document.getElementById('periodHeading').style.display = (isRange && bgRows.length) ? '' : 'none';
+  document.getElementById('periodCopyBar').style.display = periodRows.length ? '' : 'none';
 
   const table = document.getElementById('aspectsTable');
   table.querySelector('thead').innerHTML = '<tr><th>Impacto</th><th>Trânsito</th><th>Aspecto</th><th>Natal</th><th>Orbe</th><th>Ritmo</th><th>'+(isRange?'Período':'Status')+'</th><th>Casa</th></tr>';
@@ -1027,7 +1082,7 @@ function renderAspectsTable(){
     || '<tr><td colspan="8" class="empty">Nenhum aspecto com os filtros atuais.</td></tr>';
 }
 
-function copyForAI(){
+function getFilteredAspectRows(){
   const fPlanet=document.getElementById('fPlanet').value;
   const fSign=document.getElementById('fSign').value;
   const fHouse=document.getElementById('fHouse').value;
@@ -1044,6 +1099,94 @@ function copyForAI(){
     return true;
   });
   rows.sort((a,b)=>b.score-a.score);
+
+  const isRange = transitData.mode==='range';
+  const limitVal = parseInt(document.getElementById('fLimit').value);
+  const limit = (limitVal>0) ? limitVal : null;
+  let bgRowsAll = isRange ? rows.filter(isBackground) : [];
+  let periodRowsAll = isRange ? rows.filter(r=>!isBackground(r)) : rows;
+  const bgRows = limit ? bgRowsAll.slice(0,limit) : bgRowsAll;
+  const periodRows = limit ? periodRowsAll.slice(0,limit) : periodRowsAll;
+  return {isRange, bgRows, bgRowsAll, periodRows, periodRowsAll};
+}
+
+function downloadBlob(text, filename, mime){
+  const blob = new Blob([text], {type:mime});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function rowToPlainObject(r, isRange){
+  const base = {
+    transito: PLANET_LABEL[r.transit],
+    signo: SIGNS[r.sIdx],
+    aspecto: r.aspect.name,
+    natal: PLANET_LABEL[r.natal],
+    orbe_graus: Number(r.orb.toFixed(2)),
+    casa: r.house || null,
+    retrogrado: !!r.retro,
+    impacto: r.score,
+    ritmo: speedTag(r.transit, r.aspect.orb).label
+  };
+  if(isRange){
+    base.inicio = r.startLabel; base.exato = r.exactLabel; base.fim = r.endLabel;
+    base.em_curso = !!(r.touchesStart && r.touchesEnd);
+    base.encerrando = !!(r.touchesStart && !r.touchesEnd);
+    base.novo = !!(r.touchesEnd && !r.touchesStart);
+  } else {
+    base.status = r.applying ? 'aplicando' : 'separando';
+  }
+  return base;
+}
+
+function exportResultsJson(){
+  if(!transitData){ return; }
+  const sel = getFilteredAspectRows();
+  const data = {
+    gerado_em: new Date().toISOString(),
+    mapa_natal: natalPointList().map(name=>{
+      const lon = natalLon(name);
+      const house = natalChart.hasHouses ? houseOf(lon,natalChart.cusps) : null;
+      return { ponto: PLANET_LABEL[name], signo: SIGNS[signOf(lon)], grau: degMinStr(lon%30), casa: house };
+    }),
+    posicoes_em_transito: transitData.positionRows.map(p=>({
+      planeta: PLANET_LABEL[p.name], signo: SIGNS[p.sIdx], grau: degMinStr(p.lon%30),
+      casa_natal: p.house || null, retrogrado: !!p.retro
+    })),
+    pano_de_fundo: sel.isRange ? sel.bgRows.map(r=>rowToPlainObject(r,true)) : [],
+    eventos: sel.periodRows.map(r=>rowToPlainObject(r, sel.isRange))
+  };
+  downloadBlob(JSON.stringify(data, null, 2), 'transitos-resultado.json', 'application/json');
+}
+
+function exportResultsCsv(){
+  if(!transitData){ return; }
+  const sel = getFilteredAspectRows();
+  const header = ['Seção','Impacto','Trânsito','Signo','Aspecto','Natal','Orbe(°)','Casa','Ritmo','Retrógrado','Status/Período'];
+  const lines = [header.join(';')];
+  function csvEscape(v){
+    v = String(v==null?'':v);
+    return /[;"\n]/.test(v) ? '"'+v.replace(/"/g,'""')+'"' : v;
+  }
+  function pushRow(r, secao, isRange){
+    const statusOrPeriodo = isRange
+      ? (r.startLabel+' → '+r.endLabel+' (exato '+r.exactLabel+')')
+      : (r.applying ? 'Aplicando' : 'Separando');
+    lines.push([
+      secao, r.score, PLANET_LABEL[r.transit], SIGNS[r.sIdx], r.aspect.name, PLANET_LABEL[r.natal],
+      r.orb.toFixed(2), r.house||'—', speedTag(r.transit,r.aspect.orb).label, r.retro?'Sim':'Não', statusOrPeriodo
+    ].map(csvEscape).join(';'));
+  }
+  if(sel.isRange) sel.bgRows.forEach(r=>pushRow(r,'Pano de fundo', true));
+  sel.periodRows.forEach(r=>pushRow(r, sel.isRange ? 'Evento do período' : 'Aspecto', sel.isRange));
+  downloadBlob('\uFEFF'+lines.join('\n'), 'transitos-resultado.csv', 'text/csv;charset=utf-8');
+}
+
+function copyForAI(scope, btn){
+  scope = scope || 'all';
 
   function aspectLineText(r, idx, isRange){
     let line = (idx+1)+". Trânsito de "+PLANET_LABEL[r.transit]+" em "+SIGNS[r.sIdx]+(r.house?(" (Casa "+r.house+")"):"")+" forma "+r.aspect.name.toLowerCase()+" (orbe "+r.orb.toFixed(2)+"°) com "+PLANET_LABEL[r.natal]+" natal";
@@ -1074,26 +1217,33 @@ function copyForAI(){
     text += "- "+PLANET_LABEL[p.name]+": "+SIGNS[p.sIdx]+" "+degMinStr(p.lon%30)+(p.house?(", Casa natal "+p.house):"")+(p.retro?" (retrógrado)":"")+"\n";
   });
 
-  const isRange = transitData.mode==='range';
-  const limitVal = parseInt(document.getElementById('fLimit').value);
-  const limit = (limitVal>0) ? limitVal : null;
-  let bgRowsAll = isRange ? rows.filter(isBackground) : [];
-  let periodRowsAll = isRange ? rows.filter(r=>!isBackground(r)) : rows;
-  const bgRows = limit ? bgRowsAll.slice(0,limit) : bgRowsAll;
-  const periodRows = limit ? periodRowsAll.slice(0,limit) : periodRowsAll;
+  const sel = getFilteredAspectRows();
+  const isRange = sel.isRange, bgRows = sel.bgRows, bgRowsAll = sel.bgRowsAll, periodRows = sel.periodRows, periodRowsAll = sel.periodRowsAll;
+
+  const includeBg = isRange && bgRowsAll.length && (scope==='all' || scope==='background');
+  const includePeriod = (scope==='all' || scope==='period');
 
   if(isRange && bgRowsAll.length){
-    text += "\nPANO DE FUNDO ("+bgRows.length+" de "+bgRowsAll.length+" — trânsitos lentos já em curso, que atravessam todo o período "+transitData.rangeLabel+"; considere-os o tema estrutural dessa fase, não eventos pontuais dela)\n";
-    bgRows.forEach((r,idx)=>{ text += aspectLineText(r,idx,true)+"\n"; });
-
-    text += "\nEVENTOS DO PERÍODO ("+periodRows.length+" de "+periodRowsAll.length+" — ordenados por impacto, específicos de "+transitData.rangeLabel+")\n";
-    periodRows.forEach((r,idx)=>{ text += aspectLineText(r,idx,true)+"\n"; });
+    if(includeBg){
+      text += "\nPANO DE FUNDO ("+bgRows.length+" de "+bgRowsAll.length+" — trânsitos lentos já em curso, que atravessam todo o período "+transitData.rangeLabel+"; considere-os o tema estrutural dessa fase, não eventos pontuais dela)\n";
+      bgRows.forEach((r,idx)=>{ text += aspectLineText(r,idx,true)+"\n"; });
+    }
+    if(includePeriod){
+      text += "\nEVENTOS DO PERÍODO ("+periodRows.length+" de "+periodRowsAll.length+" — ordenados por impacto, específicos de "+transitData.rangeLabel+")\n";
+      periodRows.forEach((r,idx)=>{ text += aspectLineText(r,idx,true)+"\n"; });
+    }
   } else {
     text += "\nASPECTOS (ordenados por impacto, "+periodRows.length+" de "+periodRowsAll.length+(isRange?(", "+transitData.rangeLabel):"")+")\n";
     periodRows.forEach((r,idx)=>{ text += aspectLineText(r,idx,isRange)+"\n"; });
   }
 
-  text += "\nPor favor, interprete esses trânsitos considerando meu mapa natal. Trate os itens de PANO DE FUNDO (se houver) como o tema estrutural da fase, e os EVENTOS DO PERÍODO como o que é específico desse momento — priorizando estes últimos por impacto.";
+  if(scope==='background'){
+    text += "\nPor favor, interprete este pano de fundo considerando meu mapa natal: são trânsitos lentos que atravessam toda a fase atual, o tema estrutural desse momento — não eventos pontuais.";
+  } else if(scope==='period'){
+    text += "\nPor favor, interprete estes eventos do período considerando meu mapa natal, ordenados por impacto. São específicos da janela "+(transitData.rangeLabel||"calculada")+", não o pano de fundo estrutural.";
+  } else {
+    text += "\nPor favor, interprete esses trânsitos considerando meu mapa natal. Trate os itens de PANO DE FUNDO (se houver) como o tema estrutural da fase, e os EVENTOS DO PERÍODO como o que é específico desse momento — priorizando estes últimos por impacto.";
+  }
 
   const box = document.getElementById('copyBox');
   box.textContent = text;
@@ -1106,7 +1256,20 @@ function copyForAI(){
   }catch(e){
     document.execCommand('copy');
   }
+  if(btn){
+    const original = btn.textContent;
+    btn.textContent = 'Copiado ✓';
+    btn.disabled = true;
+    setTimeout(()=>{ btn.textContent = original; btn.disabled = false; }, 1600);
+  }
 }
+
+// ---------- inicialização ----------
+(function init(){
+  if(loadNatalFromStorage()){
+    calcNatal();
+  }
+})();
 </script>
 </body>
 </html>
